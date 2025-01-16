@@ -141,3 +141,4 @@ if st.session_state["cleaned_data"] is not None:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 st.markdown("<br><br><h4 style='text-align: left; color: yellow;'>Please reload the page for a new file</h2>", unsafe_allow_html=True)
+#comment added for git
