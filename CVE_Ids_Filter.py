@@ -7,7 +7,8 @@ import pygame  # For sound playback
 import base64
 from io import BytesIO
 from pathlib import Path
-
+import os
+os.environ["SDL_AUDIODRIVER"] = "dummy"  # Use dummy driver to bypass audio device issue
 # Initialize pygame mixer for sound
 pygame.mixer.init()
 
