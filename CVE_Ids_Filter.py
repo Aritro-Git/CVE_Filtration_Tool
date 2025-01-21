@@ -16,9 +16,7 @@ os.environ["SDL_AUDIODRIVER"] = "dummy"  # Use dummy driver to bypass audio devi
 pygame.mixer.init()
 
 # Allowed IP ranges for access (replace with your organization's ranges)
-ALLOWED_IPS = [
-    "10.19.164.0/22",  # Example internal IP range # Example public IP range (replace with your actual range)
-]
+ALLOWED_IPS = ["10.19.164.0/22"]
 
 # Function to check if an IP is allowed
 def is_ip_allowed(client_ip, allowed_ips):
