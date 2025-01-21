@@ -8,9 +8,38 @@ import base64
 from io import BytesIO
 from pathlib import Path
 import os
+import ipaddress
+from streamlit_javascript import st_javascript  # Added for fetching client IP
+
 os.environ["SDL_AUDIODRIVER"] = "dummy"  # Use dummy driver to bypass audio device issue
 # Initialize pygame mixer for sound
 pygame.mixer.init()
+
+# Allowed IP ranges for access (replace with your organization's ranges)
+ALLOWED_IPS = [
+    "10.19.164.0/22",  # Example internal IP range
+    "203.0.113.0/24",  # Example public IP range (replace with your actual range)
+]
+
+# Function to check if an IP is allowed
+def is_ip_allowed(client_ip, allowed_ips):
+    client_ip = ipaddress.ip_address(client_ip)
+    for ip_range in allowed_ips:
+        if client_ip in ipaddress.ip_network(ip_range):
+            return True
+    return False
+
+# Fetch client IP using JavaScript
+client_ip = st_javascript("await fetch('https://api64.ipify.org?format=json').then(res => res.json()).then(json => json.ip);")
+
+if client_ip:
+    if not is_ip_allowed(client_ip, ALLOWED_IPS):
+        st.error(f"Access denied for IP: {client_ip}")
+        st.stop()
+    else:
+        st.success(f"Access granted for IP: {client_ip}")
+else:
+    st.warning("Unable to fetch IP address. Please check your connection.")
 
 # Set up Streamlit page configuration
 st.set_page_config(page_title='CVE Filtration Tool', layout="wide")
