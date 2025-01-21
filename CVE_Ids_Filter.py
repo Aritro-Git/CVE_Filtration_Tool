@@ -17,8 +17,7 @@ pygame.mixer.init()
 
 # Allowed IP ranges for access (replace with your organization's ranges)
 ALLOWED_IPS = [
-    "10.19.164.0/22",  # Example internal IP range
-    "203.0.113.0/24",  # Example public IP range (replace with your actual range)
+    "10.19.164.0/22",  # Example internal IP range # Example public IP range (replace with your actual range)
 ]
 
 # Function to check if an IP is allowed
