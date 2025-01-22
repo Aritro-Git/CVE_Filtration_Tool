@@ -21,10 +21,10 @@ col1, col2, col3 = st.columns([1, 0.2, 1])  # Reduced middle column width for a 
 with col1:
     image1 = Image.open('Amdocs_Image.jpg')
     st.image(image1, width=200, caption="Amdocs")
-with col2:
+#with col2:
     #image1 = Image.open('Amdocs_Image.jpg')
     #st.image(image1, width=200, caption="Amdocs")    
-with col3:
+with col2:
     image2 = Image.open('ATT_Image.jpg')
     st.image(image2, width=200, caption="AT&T")
 
