@@ -18,7 +18,7 @@ st.markdown("<h1 style='text-align: center; color: white;'><u>CVE Filtration Too
 st.markdown("<h2 style='text-align: center; color: white;'>Welcome!!!</h2>", unsafe_allow_html=True)
 
 # Display logos with a smaller gap
-col1, col2, col3 = st.columns([1, 0.2, 0.5])  # Adjusted column width for a smaller gap
+col1, col2, col3 = st.columns([1, 0.5, 1])  # Adjusted column width for a smaller gap
 with col1:
     image1 = Image.open('Amdocs_Image.jpg')
     st.image(image1, width=200, caption="Amdocs")
