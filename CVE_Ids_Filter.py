@@ -17,12 +17,15 @@ st.set_page_config(page_title='CVE Filtration Tool', layout="wide")
 st.markdown("<h1 style='text-align: center; color: white;'><u>CVE Filtration Tool</u></h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: white;'>Welcome!!!</h2>", unsafe_allow_html=True)
 
-# Display logos with padding between them
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
+# Display logos with equal spacing and small gap
+col1, col2, col3 = st.columns([1, 1, 1])
+with col1:
     image1 = Image.open('Amdocs_Image.jpg')
+    st.image(image1, width=200, caption="Amdocs")
+
+with col3:
     image2 = Image.open('ATT_Image.jpg')
-    st.image([image1, image2], width=200, caption=["Amdocs", "AT&T"], use_column_width=200)
+    st.image(image2, width=200, caption="AT&T")
 
 # Function to add background image
 def add_bg_from_local(image_file):
