@@ -22,7 +22,7 @@ col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     image1 = Image.open('Amdocs_Image.jpg')
     image2 = Image.open('ATT_Image.jpg')
-    st.image([image1, image2], width=200, caption=["Amdocs", "AT&T"], use_column_width=200)
+    st.image([image1, image2], width=200, caption=["Amdocs", "AT&T"], use_column_width=false)
 
 # Function to add background image
 def add_bg_from_local(image_file):
