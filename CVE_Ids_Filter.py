@@ -77,8 +77,8 @@ if uploaded_file:
     # Play success sound
     play_success_sound()
 
-        # Display success message after processing
-        st.success("File uploaded successfully!")
+    # Display success message after processing
+    st.success("File uploaded successfully!")
 
     # Load Excel data only if cleaned data is not already in session state
     if st.session_state["cleaned_data"] is None:
