@@ -18,7 +18,7 @@ st.markdown("<h1 style='text-align: center; color: white;'><u>CVE Filtration Too
 st.markdown("<h2 style='text-align: center; color: white;'>Welcome!!!</h2>", unsafe_allow_html=True)
 
 # Display logos with padding between them
-col1, col2, col3 = st.columns([1, 2, 1])
+col1, col2, col3 = st.columns([1, 1, 2])
 with col2:
     image1 = Image.open('Amdocs_Image.jpg')
     image2 = Image.open('ATT_Image.jpg')
