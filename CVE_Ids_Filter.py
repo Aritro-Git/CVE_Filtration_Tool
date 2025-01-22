@@ -68,14 +68,14 @@ if uploaded_file:
         st.session_state["uploaded_file"] = uploaded_file
 
         # Simulate file upload progress
-        with st.spinner("Processing file..."):
-            progress_bar = st.progress(0)
-            for i in range(101):
-                time.sleep(0.02)  # Simulate processing delay
-                progress_bar.progress(i)
+    st.markdown("<h3 style='text-align: center; color: lightgreen;'>Processing file...</h3>", unsafe_allow_html=True)
+    progress_bar = st.progress(0)
+    for i in range(101):
+        time.sleep(0.02)  # Simulate processing delay
+        progress_bar.progress(i)
 
-        # Play success sound
-        play_success_sound()
+    # Play success sound
+    play_success_sound()
 
         # Display success message after processing
         st.success("File uploaded successfully!")
