@@ -68,17 +68,16 @@ if uploaded_file:
         st.session_state["uploaded_file"] = uploaded_file
 
         # Simulate file upload progress
-    st.markdown("<h3 style='text-align: center; color: lightgreen;'>Processing file...</h3>", unsafe_allow_html=True)
     progress_bar = st.progress(0)
+    progress_text = st.empty()  # Placeholder for progress text
     for i in range(101):
         time.sleep(0.02)  # Simulate processing delay
         progress_bar.progress(i)
+        progress_text.markdown(f"<h4 style='text-align: center; color: lightgreen;'>Progress: {i}%</h4>", unsafe_allow_html=True)
 
-    # Play success sound
+    # Play success sound and clear processing text
     play_success_sound()
-
-    # Display success message after processing
-    st.success("File uploaded successfully!")
+    progress_text.markdown("<h4 style='text-align: center; color: lightgreen;'>File upload complete!</h4>", unsafe_allow_html=True)
 
     # Load Excel data only if cleaned data is not already in session state
     if st.session_state["cleaned_data"] is None:
