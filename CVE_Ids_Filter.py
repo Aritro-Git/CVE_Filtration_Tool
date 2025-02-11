@@ -39,7 +39,7 @@ st.markdown("<h1 style='text-align: center; color: white;'><u>CVE Filtration Too
 st.markdown("<h2 style='text-align: center; color: white;'>Welcome!!!</h2>", unsafe_allow_html=True)
 
 # Display Company Logos (Amdocs & AT&T)
-col1, col2, col3 = st.columns([1.5, 0.5, 2])
+col1, col2, col3 = st.columns([1.5, 1, 2])
 with col2:
     amdocs_logo = Image.open('Amdocs_Image.jpg')
     st.image(amdocs_logo, width=200, caption="Amdocs")
