@@ -107,7 +107,7 @@ def process_data(df1, df2):
 # Streamlit UI for File Upload
 st.title("📊 ASTRA Scan Analyzer")
 
-st.write("Upload two files: **(1) Image Package List & (2) CVE Fix Data**")
+#st.write("Upload two files: **(1) Image Package List & (2) CVE Fix Data**")
 file1 = st.file_uploader("Upload First File (Image Packages - CSV or Excel)", type=["csv", "xlsx"])
 file2 = st.file_uploader("Upload Second File (CVE Fixes - CSV or Excel)", type=["csv", "xlsx"])
 
