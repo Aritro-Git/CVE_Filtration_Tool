@@ -208,12 +208,12 @@ if st.session_state["cleaned_data"] is not None and not st.session_state["cleane
     st.table(pivot_table)  # st.table() prevents sorting & keeps it read-only
     # **📥 Move Download Button Under Pivot Table**
 st.markdown("<br>", unsafe_allow_html=True)  # Add spacing
-st.download_button(
-    label="📥 Download ASTRA-SCAN-OUTPUT.xlsx",
-    data=st.session_state["processed_file"],
-    file_name="ASTRA-SCAN-OUTPUT.xlsx",
-    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-)
+    st.download_button(
+        label="📥 Download ASTRA-SCAN-OUTPUT.xlsx",
+        data=st.session_state["processed_file"],
+        file_name="ASTRA-SCAN-OUTPUT.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
 
 # **Footer with Logos**
 footer = st.container()
