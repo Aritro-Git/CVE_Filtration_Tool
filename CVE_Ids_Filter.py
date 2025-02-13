@@ -32,6 +32,17 @@ def add_bg_from_local(image_file):
         """,
         unsafe_allow_html=True
     )
+    # **Apply CSS for Page Zoom to 80%**
+st.markdown(
+    """
+    <style>
+        body {
+            zoom: 80%;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # Apply Background Image and Styles
 add_bg_from_local('zoom_new_brand10.jpg')
