@@ -11,19 +11,53 @@ import plotly.graph_objects as go
 os.environ["SDL_AUDIODRIVER"] = "dummy"  # Use dummy driver to bypass audio device issue
 pygame.mixer.init()
 
+# Set Streamlit Page Configuration (Dark Mode, Fullscreen)
+st.set_page_config(page_title="Security Vulnerability Report Automation", layout="wide")
+
+# Function to Add Background Image and Dark Mode Styles
+def add_bg_from_local(image_file):
+    with open(image_file, "rb") as img_file:
+        encoded_string = base64.b64encode(img_file.read()).decode()
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url(data:image/png;base64,{encoded_string});
+            background-size: cover;
+            color: white;
+        }}
+        h1, h2, h3, h4, h5, h6 {{
+            color: white;
+        }}
+        .stFileUploader div {{
+            font-size: 20px;
+            color: cyan;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    # **Apply CSS for Page Zoom to 80%**
+st.markdown(
+    """
+    <style>
+        body {
+            zoom: 80%;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Apply Background Image and Styles
+add_bg_from_local('zoom_new_brand10.jpg')
+
 # Set up Streamlit page configuration
 st.set_page_config(page_title='CGF-Dashboard', layout="wide")
 st.markdown("<h1 style='text-align: center; color: white;'><u>CGF-Dashboard</u></h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: white;'>Welcome!!!</h2>", unsafe_allow_html=True)
 
-# Display logos with padding
-col1, col2, col3 = st.columns([1.5,0.5, 2])
-with col2:
-    image1 = Image.open('Amdocs_Image.jpg')
-    st.image(image1, width=200, caption="Amdocs")
-with col3:
-    image2 = Image.open('ATT_Image.jpg')
-    st.image(image2, width=200, caption="AT&T")
+
 
 # Function to add background image
 def add_bg_from_local(image_file):
@@ -237,3 +271,13 @@ if st.session_state["data"] is not None:
             else:
                 st.markdown("I couldn't understand your query. Try asking about 'highest SLA missed', 'critical issues', or 'most common severity'.")
     st.markdown("<br><br><h4 style='text-align: left; color: yellow;'>Please reload the page for a new file</h2>",unsafe_allow_html=True)
+
+
+# **Footer with Logos**
+footer = st.container()
+with footer:
+    col1, col2, col3 = st.columns([15, 1, 1])
+    with col2:
+        st.image("Amdocs_Image.jpg", width=100)
+    with col3:
+        st.image("ATT_Image.jpg", width=100)
