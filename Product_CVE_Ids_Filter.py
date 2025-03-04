@@ -60,13 +60,22 @@ if "processed_file" not in st.session_state:
     st.session_state["processed_file"] = None
 
 # Function to load a file (Excel or CSV) into a DataFrame
-def load_file(uploaded_file):
-    if uploaded_file.name.endswith('.xlsx'):
-        return pd.read_excel(uploaded_file, engine='openpyxl', header=0)
-    elif uploaded_file.name.endswith('.csv'):
-        return pd.read_csv(uploaded_file, header=0)
-    else:
-        st.error("Unsupported file type. Please upload a CSV or Excel file.")
+def load_file(uploaded_file, file_type):
+    if uploaded_file is None:
+        return None  # Ensure no empty file is read
+
+    uploaded_file.seek(0)  # Reset file pointer before reading
+
+    try:
+        if file_type.endswith('.xlsx'):
+            return pd.read_excel(uploaded_file, engine='openpyxl', header=0)
+        elif file_type.endswith('.csv'):
+            return pd.read_csv(uploaded_file, header=0)
+        else:
+            st.error("Unsupported file type. Please upload a CSV or Excel file.")
+            return None
+    except pd.errors.EmptyDataError:
+        st.error("Uploaded file is empty or contains no valid data.")
         return None
 
 # Function to process data
@@ -122,14 +131,17 @@ file1 = st.file_uploader("", type=["csv", "xlsx"])
 st.markdown("<h3 style='text-align: left; font-size:22px; color: white;'>📂 Step 2: Upload Product Fix CVEs :</h3>", unsafe_allow_html=True)
 file2 = st.file_uploader(" ", type=["csv", "xlsx"])
 
-if file1:
-    st.session_state["uploaded_files"]["file1"] = file1
-if file2:
-    st.session_state["uploaded_files"]["file2"] = file2
+
+# Store uploaded files persistently in session state
+if file1 is not None:
+    st.session_state["uploaded_files"]["file1"] = {"data": BytesIO(file1.getvalue()), "name": file1.name}
+
+if file2 is not None:
+    st.session_state["uploaded_files"]["file2"] = {"data": BytesIO(file2.getvalue()), "name": file2.name}
 
 if st.session_state["uploaded_files"]["file1"] and st.session_state["uploaded_files"]["file2"]:
-    df1 = load_file(st.session_state["uploaded_files"]["file1"])
-    df2 = load_file(st.session_state["uploaded_files"]["file2"])
+    df1 = load_file(st.session_state["uploaded_files"]["file1"]["data"], st.session_state["uploaded_files"]["file1"]["name"])
+    df2 = load_file(st.session_state["uploaded_files"]["file2"]["data"], st.session_state["uploaded_files"]["file2"]["name"])
 
     if df1 is not None and df2 is not None:
         if st.session_state["processed_file"] is None:
@@ -170,8 +182,8 @@ if st.session_state["cleaned_data"] is not None and not st.session_state["cleane
     pivot_table = pd.concat([pivot_table, grand_total_col])
 
     # **Format Table: Convert to integers & remove decimals**
-    pivot_table = pivot_table.astype(int)  
-    styled_pivot = pivot_table.style.format("{:.0f}")  
+    pivot_table = pivot_table.astype(int)
+    styled_pivot = pivot_table.style.format("{:.0f}")
 
     # **Apply CSS to Fix Header Width & Black Background**
     st.markdown(
@@ -214,6 +226,7 @@ if st.session_state["cleaned_data"] is not None and not st.session_state["cleane
         file_name="ASTRA-SCAN-OUTPUT.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",)
 
+st.markdown("<br><br><h4 style='text-align: left; color: yellow;'>Please reload the page for a new file</h2>",unsafe_allow_html=True)
 # **Footer with Logos**
 footer = st.container()
 with footer:
