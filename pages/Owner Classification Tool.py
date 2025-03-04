@@ -55,23 +55,41 @@ st.markdown("<h2 style='text-align: center;'>Welcome!</h2>", unsafe_allow_html=T
 # App title
 #st.title(":bar_chart: Owner Classification Dashboard")
 
+# Initialize session state for file uploads
+if "uploaded_file" not in st.session_state:
+    st.session_state["uploaded_file"] = None
+
 # File upload
 st.markdown("<h3 style='text-align: left; font-size:22px; color: white;'>📂 Upload required file:</h3>", unsafe_allow_html=True)
 uploaded_file = st.file_uploader("", type=["xlsx", "csv"])
 
-if uploaded_file:
-    # Load file
-    def load_file(file):
-        if file.name.endswith(".xlsx"):
-            return pd.read_excel(file, engine="openpyxl")
-        elif file.name.endswith(".csv"):
-            return pd.read_csv(file)
+# Store file in session state correctly
+if uploaded_file is not None:
+    st.session_state["uploaded_file"] = {
+        "data": BytesIO(uploaded_file.getvalue()),  # Convert to BytesIO
+        "name": uploaded_file.name  # Store filename
+    }
+# Function to load a file (Excel or CSV) into a DataFrame
+def load_file(uploaded_file, file_type):
+    if uploaded_file is None:
+        return None  # Ensure no empty file is read
+
+    uploaded_file.seek(0)  # Reset file pointer before reading
+
+    try:
+        if file_type.endswith(".xlsx"):
+            return pd.read_excel(uploaded_file, engine="openpyxl")
+        elif file_type.endswith(".csv"):
+            return pd.read_csv(uploaded_file)
         else:
             st.error("Unsupported file type")
             return None
+    except pd.errors.EmptyDataError:
+        st.error("Uploaded file is empty or contains no valid data.")
+        return None
 
-
-    df = load_file(uploaded_file)
+if st.session_state["uploaded_file"] is not None:
+    df = load_file(st.session_state["uploaded_file"]["data"], st.session_state["uploaded_file"]["name"])
 
     if df is not None:
         # Owner Assignment
@@ -164,16 +182,18 @@ if uploaded_file:
             st.plotly_chart(fig2, use_container_width=True)
 
         # Download Excel
-        output_file = "processed_data.xlsx"
-        df.to_excel(output_file, index=False, engine='xlsxwriter')
-        with open(output_file, "rb") as file:
-            st.download_button(
-                label="Download Processed Excel File",
-                data=file,
-                file_name="processed_data.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
-st.markdown("<br><br><h4 style='text-align: left; color: yellow;'>Please reload the page for a new file</h2>",unsafe_allow_html=True)
+        buffer = BytesIO()
+        df.to_excel(buffer, index=False, engine='openpyxl')
+        buffer.seek(0)
+        st.download_button(
+            label="📥 Download Processed Excel File",
+            data=buffer,
+            file_name="processed_data.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
+st.markdown("<br><br><h4 style='text-align: left; color: yellow;'>Please reload the page for a new file</h4>", unsafe_allow_html=True)
+
 # **Footer with Logos**
 footer = st.container()
 with footer:
