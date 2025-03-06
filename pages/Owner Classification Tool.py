@@ -110,6 +110,23 @@ if st.session_state["uploaded_file"] is not None:
         for owner, pattern in owner_mapping.items():
             df.loc[df['Images Containing Package'].astype(str).str.contains(pattern, na=False), 'Owner'] = owner
 
+        # **Reorder columns to place 'Owner' in the 6th position**
+        df.insert(6, 'Owner', df.pop('Owner'))
+
+        # **Explode the CVE_Identifiers column**
+        id_column = 'CVE Ids'
+        df_exploded = df.assign(**{id_column: df[id_column].astype(str).str.split(',')}).explode(id_column).reset_index(
+            drop=True)
+
+        # **Remove duplicate rows**
+        df_cleaned = df_exploded.drop_duplicates()
+
+        # **Save the modified DataFrame to a new Excel file**
+        output_buffer = BytesIO()
+        with pd.ExcelWriter(output_buffer, engine='openpyxl') as writer:
+            df_cleaned.to_excel(writer, sheet_name="Processed_Data", index=False)
+
+        output_buffer.seek(0)
         # Count of Owners
         owner_counts = df['Owner'].value_counts()
 
@@ -181,14 +198,11 @@ if st.session_state["uploaded_file"] is not None:
             )
             st.plotly_chart(fig2, use_container_width=True)
 
-        # Download Excel
-        buffer = BytesIO()
-        df.to_excel(buffer, index=False, engine='openpyxl')
-        buffer.seek(0)
+        # **Download Processed File**
         st.download_button(
             label="📥 Download Processed Excel File",
-            data=buffer,
-            file_name="processed_data.xlsx",
+            data=output_buffer,
+            file_name="Processed_Data.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 
