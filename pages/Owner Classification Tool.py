@@ -8,7 +8,8 @@ import time
 import plotly.graph_objects as go
 
 # Set Streamlit Page Configuration (Dark Mode, Fullscreen)
-st.set_page_config(page_title="CGF Automated Owner Classification Tool", layout="wide")
+st.set_page_config(page_title="CVE InsightX Owner", layout="wide")
+
 
 # Function to Add Background Image and Dark Mode Styles
 def add_bg_from_local(image_file):
@@ -34,6 +35,8 @@ def add_bg_from_local(image_file):
         unsafe_allow_html=True
     )
     # **Apply CSS for Page Zoom to 80%**
+
+
 st.markdown(
     """
     <style>
@@ -44,23 +47,35 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+st.markdown(
+    """
+    <style>
+    /* Target the dropdown options in the multiselect */
+    div[data-baseweb="popover"] ul {
+        text-align: center;  /* Center-align dropdown options */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # Apply Background Image and Styles
-add_bg_from_local('zoom_new_brand10.jpg')
+#add_bg_from_local('zoom_new_brand10.jpg')
 
 # **Page Title**
-st.markdown("<h1 style='text-align: center;'><u>Automated Owner Classification Tool</u></h1>", unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: center;'>Welcome!</h2>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'><u>OneMediation V-Hub</u></h1>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center;'><u>CVE InsightX Owner</u></h2>", unsafe_allow_html=True)
 
 # App title
-#st.title(":bar_chart: Owner Classification Dashboard")
+# st.title(":bar_chart: Owner Classification Dashboard")
 
 # Initialize session state for file uploads
 if "uploaded_file" not in st.session_state:
     st.session_state["uploaded_file"] = None
 
 # File upload
-st.markdown("<h3 style='text-align: left; font-size:22px; color: white;'>📂 Upload required file:</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: left; font-size:22px; color: white;'>📂 Upload required file:</h3>",
+            unsafe_allow_html=True)
 uploaded_file = st.file_uploader("", type=["xlsx", "csv"])
 
 # Store file in session state correctly
@@ -69,6 +84,8 @@ if uploaded_file is not None:
         "data": BytesIO(uploaded_file.getvalue()),  # Convert to BytesIO
         "name": uploaded_file.name  # Store filename
     }
+
+
 # Function to load a file (Excel or CSV) into a DataFrame
 def load_file(uploaded_file, file_type):
     if uploaded_file is None:
@@ -88,41 +105,45 @@ def load_file(uploaded_file, file_type):
         st.error("Uploaded file is empty or contains no valid data.")
         return None
 
+
 if st.session_state["uploaded_file"] is not None:
     df = load_file(st.session_state["uploaded_file"]["data"], st.session_state["uploaded_file"]["name"])
 
     if df is not None:
-        # Owner Assignment
-        owner_mapping = {
-            'ATT': 's1agent|s1helper',
-            'Infra': 'azure-keyvault-controller|azure-keyvault-webhook|azure-keyvault-env|akv2k8s',
-            'SD': '5gi_openet_grok_exporter|attc|attc-rerating-server|grok_exporter|ilb-aux|ilb_runtime|omds-cog-base|openet-grok-exporter',
-            'Product': '5g-nrf|app-selector|atmoz|beats|busybox|centos|certgen|cert-manager-controller|cni|cog-base-container|consul|consul-acl-init|csi-secrets-store|curlimages|eck-operator|filebeat|frrouting|gloo-wrapper|grok-exporter|hashicorp|jaegertracing|jdbcsink|jetstack|k8s-tools|keycloak|kibana|kube-state-metrics|logstash|oauth2-proxy|odf|odf-streamer|offercatalog-runtime|OMDS|openet-public|operator|orchestration|OSS|re-rating|ro_runtime|rsync|sba-base-container|sba-housekeeping|sba-microservice|security|signaling-manager|sig-storage|solo-io|strimzi-connect-package|TLS|tls-init|ui-automation-openet|ums|mic|nmi|provider-azure|cert-manager-cainjector|cert-manager-webhook',
-            'Tp-Elastic': 'elasticsearch',
-            'TP-METALLB': 'metallb',
-            'TP-MULTUS': 'multus',
-            'TP-Rancher': 'rancher|calico|kubebuilder|diameter-rest-bridge|tigera',
-            'TP-VOLTDB': 'voltdb',
-            'TP-Rookceph': 'rook|ceph|cephcsi'
-        }
+        # Owner Classification (Same as CGF script)
+        df.loc[df['Images Containing Package'].str.contains('s1agent|s1helper', na=False), 'Owner'] = 'ATT'
+        df.loc[df['Images Containing Package'].str.contains(
+            'azure-keyvault-controller|azure-keyvault-webhook|azure-keyvault-env|akv2k8s', na=False), 'Owner'] = 'Infra'
+        df.loc[df['Images Containing Package'].str.contains(
+            '5g-nrf|app-selector|atmoz|beats|busybox|centos|certgen|cert-manager-controller|cni|cog-base-container|consul|consul-acl-init|csi-secrets-store|curlimages|eck-operator|filebeat|frrouting|gloo-wrapper|grok-exporter|hashicorp|jaegertracing|jdbcsink|jetstack|k8s-tools|keycloak|kibana|kube-state-metrics|logstash|oauth2-proxy|odf|odf-streamer|offercatalog-runtime|OMDS|openet-public|operator|orchestration|OSS|re-rating|ro_runtime|rsync|sba-base-container|sba-housekeeping|sba-microservice|security|signaling-manager|sig-storage|solo-io|strimzi-connect-package|TLS|tls-init|ui-automation-openet|ums|mic|nmi|provider-azure|cert-manager-cainjector|cert-manager-webhook',
+            na=False), 'Owner'] = 'Product'
+        df.loc[df['Images Containing Package'].str.contains(
+            '5gi_openet_grok_exporter|attc|attc-rerating-server|grok_exporter|ilb-aux|ilb_runtime|omds-cog-base|openet-grok-exporter',
+            na=False), 'Owner'] = 'SD'
+        df.loc[df['Images Containing Package'].str.contains('elasticsearch', na=False), 'Owner'] = 'Tp-Elastic'
+        df.loc[df['Images Containing Package'].str.contains('metallb', na=False), 'Owner'] = 'TP-METALLB'
+        df.loc[df['Images Containing Package'].str.contains('multus', na=False), 'Owner'] = 'TP-MULTUS'
+        df.loc[df['Images Containing Package'].str.contains('rancher|calico|kubebuilder|diameter-rest-bridge|tigera',
+                                                            na=False), 'Owner'] = 'TP-Rancher'
+        df.loc[df['Images Containing Package'].str.contains('voltdb', na=False), 'Owner'] = 'TP-VOLTDB'
+        df.loc[df['Images Containing Package'].str.contains('rook|ceph|cephcsi', na=False), 'Owner'] = 'TP-Rookceph'
 
-        df['Owner'] = 'Uncategorized'
-        for owner, pattern in owner_mapping.items():
-            df.loc[df['Images Containing Package'].astype(str).str.contains(pattern, na=False), 'Owner'] = owner
-
-        # **Reorder columns to place 'Owner' in the 6th position**
+        # Reorder columns to place 'Owner' in the 6th position
         df.insert(6, 'Owner', df.pop('Owner'))
 
-        # **Explode the CVE_Identifiers column**
-        id_column = 'CVE Ids'
-        df_exploded = df.assign(**{id_column: df[id_column].astype(str).str.split(',')}).explode(id_column).reset_index(
+        # Explode the CVE Ids column
+        df = df.assign(**{'CVE Ids': df['CVE Ids'].astype(str).str.split(',')}).explode('CVE Ids').reset_index(
             drop=True)
 
-        # **Remove duplicate rows**
-        df_cleaned = df_exploded.drop_duplicates()
+        # Remove duplicate rows
+        df_cleaned = df.drop_duplicates()
 
-        # **Save the modified DataFrame to a new Excel file**
+
+        # Save processed data to Excel
         output_buffer = BytesIO()
+        output_filename = "Processed_Data.xlsx"  # Default filename if file is not uploaded
+        if uploaded_file is not None:
+            output_filename = f"Processed_Data_{uploaded_file.name}"
         with pd.ExcelWriter(output_buffer, engine='openpyxl') as writer:
             df_cleaned.to_excel(writer, sheet_name="Processed_Data", index=False)
 
@@ -136,9 +157,15 @@ if st.session_state["uploaded_file"] is not None:
 
         if not df_graph1.empty:
             owner_counts_graph1 = df_graph1['Owner'].value_counts()
-            selected_owners_graph1 = st.multiselect("",
-                                                    options=owner_counts_graph1.index.tolist(),
-                                                    default=owner_counts_graph1.index.tolist())
+            # Get only the unique owners present in the file
+            available_owners_graph1 = df_graph1['Owner'].unique().tolist()
+
+            # Show only available owners in the filter dropdown
+            selected_owners_graph1 = st.multiselect(
+                "Filter by Owner",
+                options=available_owners_graph1,
+                default=available_owners_graph1
+            )
             filtered_counts_graph1 = owner_counts_graph1[selected_owners_graph1]
 
             st.subheader(":bar_chart: Amdocs Owner Distribution")
@@ -170,8 +197,15 @@ if st.session_state["uploaded_file"] is not None:
         if not df_selected.empty:
             # Filters for Graph 2 (excluding selected owners from Graph 1)
             available_owners_graph2 = [owner for owner in relevant_owners if owner not in selected_owners_graph1]
-            selected_owners_graph2 = st.multiselect("Filter by Owner for Graph 2", options=available_owners_graph2,
-                                                    default=available_owners_graph2)
+            # Get only the unique owners present for Graph 2
+            available_owners_graph2 = df_selected['Owner'].unique().tolist()
+
+            # Show only owners present in Graph 2 data
+            selected_owners_graph2 = st.multiselect(
+                "Filter by Owner for Graph 2",
+                options=available_owners_graph2,
+                default=available_owners_graph2
+            )
             df_selected = df[df['Owner'].isin(selected_owners_graph2)]
             selected_owner_counts = df_selected['Owner'].value_counts()
             max_value2 = max(selected_owner_counts.values) if not selected_owner_counts.empty else 0
@@ -202,11 +236,12 @@ if st.session_state["uploaded_file"] is not None:
         st.download_button(
             label="📥 Download Processed Excel File",
             data=output_buffer,
-            file_name="Processed_Data.xlsx",
+            file_name=output_filename,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 
-st.markdown("<br><br><h4 style='text-align: left; color: yellow;'>Please reload the page for a new file</h4>", unsafe_allow_html=True)
+st.markdown("<br><br><h4 style='text-align: left; color: yellow;'>Please reload the page for a new file</h4>",
+            unsafe_allow_html=True)
 
 # **Footer with Logos**
 footer = st.container()
