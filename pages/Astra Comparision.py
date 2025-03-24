@@ -1,10 +1,8 @@
-import streamlit as st
-import pandas as pd
 import time
 from io import BytesIO
-import sys
-import subprocess
 import matplotlib.pyplot as plt
+import pandas as pd
+import streamlit as st
 
 # Set Streamlit Page Configuration
 st.set_page_config(page_title="ASTRA Report Comparison", layout="wide")
@@ -79,7 +77,7 @@ def process_reports(df_old, df_new):
         df_same.to_excel(writer, sheet_name='No Change', index=False)
 
     buffer.seek(0)
-    return buffer
+    return buffer, len(df_completed), len(df_diff), len(df_same)
 
 
 # Ensure both files are uploaded before processing
