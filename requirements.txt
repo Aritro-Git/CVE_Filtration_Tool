@@ -6,3 +6,4 @@ pygame==2.6.1
 streamlit==1.12.0
 altair==4.2.2
 XlsxWriter==3.2.1
+matplotlib==3.7.4
