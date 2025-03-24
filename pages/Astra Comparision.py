@@ -4,7 +4,7 @@ import time
 from io import BytesIO
 import sys
 import subprocess
-
+import matplotlib.pyplot as plt
 
 # Set Streamlit Page Configuration
 st.set_page_config(page_title="ASTRA Report Comparison", layout="wide")
@@ -100,9 +100,41 @@ if (
         status_text.text(f"Processing... {percent_complete}%")
 
     # Process the data
-    processed_file = process_reports(df_old, df_new)
-    if processed_file:
+    result = process_reports(df_old, df_new)
+    if result:
+        processed_file, completed_count, new_count, same_count = result
         st.session_state["processed_file"] = processed_file
+
+        # Pie chart section
+        labels = ['Completed Items', 'New Items', 'No Change']
+        sizes = [completed_count, new_count, same_count]
+        colors = ['#4CAF50', '#2196F3', '#FFC107']
+        explode = (0.1, 0.1, 0)
+
+        fig, ax = plt.subplots()
+
+
+        # Custom function to display both count and percentage
+        def autopct_format(values):
+            def my_format(pct):
+                total = sum(values)
+                count = int(round(pct * total / 100.0))
+                return f'{pct:.1f}%\n({count})'
+
+            return my_format
+
+
+        wedges, texts, autotexts = ax.pie(
+            sizes, labels=labels, autopct=autopct_format(sizes), startangle=140,
+            colors=colors, explode=explode, textprops={'fontsize': 12}
+        )
+
+        legend_labels = [f"{label} ({count})" for label, count in zip(labels, sizes)]
+        ax.legend(wedges, legend_labels, title="Legend", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1), fontsize=12,
+                  title_fontsize=14)
+        ax.axis('equal')
+
+        st.pyplot(fig)
         status_text.text("✅ Processing Complete! Click below to download.")
     else:
         status_text.text("❌ Error: Processing failed. Check file structure.")
