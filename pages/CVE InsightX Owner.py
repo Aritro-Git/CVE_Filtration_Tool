@@ -114,24 +114,78 @@ if st.session_state["uploaded_file"] is not None:
 
     if df is not None:
         # Owner Classification (Same as CGF script)
-        df.loc[df['Images Containing Package'].str.contains('s1agent|s1helper', na=False), 'Owner'] = 'ATT'
-        df.loc[df['Images Containing Package'].str.contains(
-            'azure-keyvault-controller|azure-keyvault-webhook|azure-keyvault-env|akv2k8s', na=False), 'Owner'] = 'Infra'
-        df.loc[df['Images Containing Package'].str.contains(
-            '5g-nrf|app-selector|atmoz|beats|busybox|centos|certgen|cert-manager-controller|cni|cog-base-container|consul|consul-acl-init|csi-secrets-store|curlimages|eck-operator|filebeat|frrouting|gloo-wrapper|grok-exporter|hashicorp|jaegertracing|jdbcsink|jetstack|k8s-tools|keycloak|kibana|kube-state-metrics|logstash|oauth2-proxy|odf|odf-streamer|offercatalog-runtime|OMDS|openet-public|operator|orchestration|OSS|re-rating|ro_runtime|rsync|sba-base-container|sba-housekeeping|sba-microservice|security|signaling-manager|sig-storage|solo-io|strimzi-connect-package|TLS|tls-init|ui-automation-openet|ums|mic|nmi|provider-azure|cert-manager-cainjector|cert-manager-webhook',
-            na=False), 'Owner'] = 'Product'
-        df.loc[df['Images Containing Package'].str.contains(
-            '5gi_openet_grok_exporter|attc|attc-rerating-server|grok_exporter|ilb-aux|ilb_runtime|omds-cog-base|openet-grok-exporter',
-            na=False), 'Owner'] = 'SD'
-        df.loc[df['Images Containing Package'].str.contains('elasticsearch', na=False), 'Owner'] = 'Tp-Elastic'
-        df.loc[df['Images Containing Package'].str.contains('metallb', na=False), 'Owner'] = 'TP-METALLB'
-        df.loc[df['Images Containing Package'].str.contains('multus', na=False), 'Owner'] = 'TP-MULTUS'
-        df.loc[df['Images Containing Package'].str.contains('rancher|calico|kubebuilder|diameter-rest-bridge|tigera',
-                                                            na=False), 'Owner'] = 'TP-Rancher'
-        df.loc[df['Images Containing Package'].str.contains('voltdb', na=False), 'Owner'] = 'TP-VOLTDB'
-        df.loc[df['Images Containing Package'].str.contains('rook|ceph|cephcsi', na=False), 'Owner'] = 'TP-Rookceph'
+        # Initialize the 'Owner' column as None
+        df['Owner'] = None
 
-        # Reorder columns to place 'Owner' in the 6th position
+        # 🔹 Combo rule: If both 'strimzi-connect-package' and 'attc' exist, assign to 'Product'
+        df.loc[
+            df['Images Containing Package'].str.contains('strimzi-connect-package', na=False) &
+            df['Images Containing Package'].str.contains('attc', na=False),
+            'Owner'
+        ] = 'Product'
+
+        # 🔹 ATT rule
+        df.loc[
+            df['Owner'].isna() & df['Images Containing Package'].str.contains('s1agent|s1helper', na=False),
+            'Owner'
+        ] = 'ATT'
+
+        # 🔹 Infra rule
+        df.loc[
+            df['Owner'].isna() & df['Images Containing Package'].str.contains(
+                'azure-keyvault-controller|azure-keyvault-webhook|azure-keyvault-env|akv2k8s', na=False),
+            'Owner'
+        ] = 'Infra'
+
+        # 🔹 Product rule (excluding strimzi-connect-package handled above)
+        df.loc[
+            df['Owner'].isna() & df['Images Containing Package'].str.contains(
+                '5g-nrf|app-selector|atmoz|beats|busybox|centos|certgen|cert-manager-controller|cni|cog-base-container|consul|consul-acl-init|csi-secrets-store|curlimages|eck-operator|filebeat|frrouting|gloo-wrapper|grok-exporter|hashicorp|jaegertracing|jdbcsink|jetstack|k8s-tools|keycloak|kibana|kube-state-metrics|logstash|oauth2-proxy|odf|odf-streamer|offercatalog-runtime|OMDS|openet-public|operator|orchestration|OSS|re-rating|ro_runtime|rsync|sba-base-container|sba-housekeeping|sba-microservice|security|signaling-manager|sig-storage|solo-io|TLS|tls-init|ui-automation-openet|ums|mic|nmi|provider-azure|cert-manager-cainjector|cert-manager-webhook',
+                na=False),
+            'Owner'
+        ] = 'Product'
+
+        # 🔹 TP Owners
+        df.loc[
+            df['Owner'].isna() & df['Images Containing Package'].str.contains('elasticsearch', na=False),
+            'Owner'
+        ] = 'Tp-Elastic'
+
+        df.loc[
+            df['Owner'].isna() & df['Images Containing Package'].str.contains('metallb', na=False),
+            'Owner'
+        ] = 'TP-METALLB'
+
+        df.loc[
+            df['Owner'].isna() & df['Images Containing Package'].str.contains('multus', na=False),
+            'Owner'
+        ] = 'TP-MULTUS'
+
+        df.loc[
+            df['Owner'].isna() & df['Images Containing Package'].str.contains(
+                'rancher|calico|kubebuilder|diameter-rest-bridge|tigera', na=False),
+            'Owner'
+        ] = 'TP-Rancher'
+
+        df.loc[
+            df['Owner'].isna() & df['Images Containing Package'].str.contains('voltdb', na=False),
+            'Owner'
+        ] = 'TP-VOLTDB'
+
+        df.loc[
+            df['Owner'].isna() & df['Images Containing Package'].str.contains('rook|ceph|cephcsi', na=False),
+            'Owner'
+        ] = 'TP-Rookceph'
+
+        # 🔹 SD rule (only if Owner still not set)
+        df.loc[
+            df['Owner'].isna() & df['Images Containing Package'].str.contains(
+                '5gi_openet_grok_exporter|attc|attc-rerating-server|grok_exporter|ilb-aux|ilb_runtime|omds-cog-base|openet-grok-exporter',
+                na=False),
+            'Owner'
+        ] = 'SD'
+
+        # 🔹 Reorder 'Owner' column to 6th position
         df.insert(6, 'Owner', df.pop('Owner'))
 
         # Explode the CVE Ids column
