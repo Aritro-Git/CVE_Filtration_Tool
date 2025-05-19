@@ -192,8 +192,30 @@ if st.session_state["uploaded_file"] is not None:
         df = df.assign(**{'CVE Ids': df['CVE Ids'].astype(str).str.split(',')}).explode('CVE Ids').reset_index(
             drop=True)
 
-        # Remove duplicate rows
+       # Remove duplicate rows
         df_cleaned = df.drop_duplicates()
+
+        final_columns = [
+            'Package Name',
+            'Package Version',
+            'Risk/Severity',
+            'CVE Ids',
+            'Age (Days)',
+            'Images Containing Package',
+            'Owner',
+            'Package Type',
+            'Package Manager',
+            'Package Manager Path',
+            'Image OS',
+            'Known fix in version',
+            'Namespaces',
+            'Pods',
+            'SLA Date'
+        ]
+
+        # Keep only the columns that exist in the DataFrame, in the defined order
+        available_columns = [col for col in final_columns if col in df_cleaned.columns]
+        df_cleaned = df_cleaned[available_columns]
         
         # Save processed data to Excel
         output_buffer = BytesIO()
