@@ -194,26 +194,6 @@ if st.session_state["uploaded_file"] is not None:
 
         # Remove duplicate rows
         df_cleaned = df.drop_duplicates()
-
-        # ✅ Filter and reorder columns before saving
-        final_columns = [
-            'Package Name',
-            'Package Version',
-            'Risk/Severity',
-            'CVE Ids',
-            'Age (Days)',
-            'Images Containing Package',
-            'Owner',
-            'Package Type',
-            'Package Manager',
-            'Package Manager Path',
-            'Image OS',
-            'Known fix in version',
-            'Namespaces',
-            'Pods',
-            'SLA Date'
-        ]
-        df_cleaned = df_cleaned[final_columns]
         
         # Save processed data to Excel
         output_buffer = BytesIO()
