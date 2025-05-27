@@ -90,6 +90,7 @@ if uploaded_file is not None:
 
 
 # Function to load a file (Excel or CSV) into a DataFrame
+# Function to load a file (Excel or CSV) into a DataFrame
 def load_file(uploaded_file, file_type):
     if uploaded_file is None:
         return None  # Ensure no empty file is read
@@ -104,8 +105,8 @@ def load_file(uploaded_file, file_type):
         else:
             st.error("Unsupported file type")
             return None
-    except pd.errors.EmptyDataError:
-        st.error("Uploaded file is empty or contains no valid data.")
+    except Exception as e:
+        st.warning("⚠️ There was an error processing the uploaded file. Please ensure the file has the required headers: Package Name, Package Version, Severity, CVE Ids, Age (Days), and Images Containing Package.")
         return None
 
 
