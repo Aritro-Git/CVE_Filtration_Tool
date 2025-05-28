@@ -109,7 +109,7 @@ if st.session_state["uploaded_files"].get("old_report") and st.session_state["up
     if result:
         processed_file, summary_df = result
         st.session_state["processed_file"] = processed_file
-        st.dataframe(summary_df, use_container_width=True)
+        st.dataframe(summary_df)
         status_text.text("✅ Processing Complete! Click below to download.")
     else:
         status_text.text("❌ Error in processing.")
