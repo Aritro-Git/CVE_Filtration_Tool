@@ -13,8 +13,8 @@ if "processed_file" not in st.session_state:
 st.markdown("<h1 style='text-align: center;'><u>OneMediation V-Hub</u></h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center;'><u>ASTRA Comparison Tool</u></h2>", unsafe_allow_html=True)
 
-old_file = st.file_uploader("### 📂 Step 1: Upload Old ASTRA Report", type=["xlsx"], key="old")
-new_file = st.file_uploader("### 📂 Step 2: Upload New ASTRA Report", type=["xlsx"], key="new")
+old_file = st.file_uploader(" 📂 Step 1: Upload Old ASTRA Report", type=["xlsx"], key="old")
+new_file = st.file_uploader(" 📂 Step 2: Upload New ASTRA Report", type=["xlsx"], key="new")
 
 if old_file:
     st.session_state["uploaded_files"]["old_report"] = {"data": BytesIO(old_file.getvalue()), "name": old_file.name}
