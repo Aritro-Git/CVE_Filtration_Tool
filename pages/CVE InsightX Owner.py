@@ -209,8 +209,8 @@ if st.session_state["uploaded_file"] is not None:
             'Package Manager Path',
             'Image OS',
             'Known fix in version',
-            'Namespaces',
-            'Pods',
+            'Namespace',
+            'Pod',
             'SLA Date'
         ]
 
