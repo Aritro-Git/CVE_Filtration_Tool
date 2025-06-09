@@ -214,9 +214,14 @@ if st.session_state["uploaded_file"] is not None:
             'SLA Date'
         ]
 
-        # Keep only the columns that exist in the DataFrame, in the defined order
-        available_columns = [col for col in final_columns if col in df_cleaned.columns]
-        df_cleaned = df_cleaned[available_columns]
+        # Check for missing required columns
+        missing_cols = [col for col in final_columns if col not in df_cleaned.columns]
+
+        if missing_cols:
+            st.warning(f"⚠️ The following required columns are missing from the uploaded file and processing is halted:\n\n{', '.join(missing_cols)}")
+            st.stop()  # Prevent further execution
+        else:
+            df_cleaned = df_cleaned[final_columns]
         
         # Save processed data to Excel
         output_buffer = BytesIO()
