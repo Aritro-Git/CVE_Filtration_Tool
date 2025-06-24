@@ -12,15 +12,15 @@ import subprocess
 # Set Streamlit Page Configuration (Dark Mode, Fullscreen)
 st.set_page_config(page_title="CVE InsightX Owner", layout="wide")
 
-# Inject GTM <head> script
+# Inject GTM Script into the <head>
 st.markdown("""
 <!-- Google Tag Manager -->
 <script>
 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id=GTM-NQ7FH8SF'+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NQ7FH8SF');
+'https://www.googletagmanager.com/gtm.js?id=GTM-5383LGRR'+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5383LGRR');
 </script>
 <!-- End Google Tag Manager -->
 """, unsafe_allow_html=True)
