@@ -9,6 +9,9 @@ import plotly.graph_objects as go
 import sys
 import subprocess
 
+# Set Streamlit Page Configuration (Dark Mode, Fullscreen)
+st.set_page_config(page_title="CVE InsightX Owner", layout="wide")
+
 # Inject GTM <head> script
 st.markdown("""
 <!-- Google Tag Manager -->
@@ -21,9 +24,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </script>
 <!-- End Google Tag Manager -->
 """, unsafe_allow_html=True)
-
-# Set Streamlit Page Configuration (Dark Mode, Fullscreen)
-st.set_page_config(page_title="CVE InsightX Owner", layout="wide")
 
 # Inject GTM <noscript>
 st.markdown("""
