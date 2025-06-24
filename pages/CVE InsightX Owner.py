@@ -9,10 +9,29 @@ import plotly.graph_objects as go
 import sys
 import subprocess
 
+# Inject GTM <head> script
+st.markdown("""
+<!-- Google Tag Manager -->
+<script>
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id=GTM-NQ7FH8SF'+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NQ7FH8SF');
+</script>
+<!-- End Google Tag Manager -->
+""", unsafe_allow_html=True)
 
 # Set Streamlit Page Configuration (Dark Mode, Fullscreen)
 st.set_page_config(page_title="CVE InsightX Owner", layout="wide")
 
+# Inject GTM <noscript>
+st.markdown("""
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NQ7FH8SF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+""", unsafe_allow_html=True)
 
 # Function to Add Background Image and Dark Mode Styles
 def add_bg_from_local(image_file):
