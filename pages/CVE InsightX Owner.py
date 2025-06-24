@@ -25,6 +25,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<script>
+console.log("GTM script injected!");
+</script>
+""", unsafe_allow_html=True)
+
 # Inject GTM <noscript>
 st.markdown("""
 <!-- Google Tag Manager (noscript) -->
