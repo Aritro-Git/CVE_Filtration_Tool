@@ -13,8 +13,9 @@ if "processed_file" not in st.session_state:
 st.markdown("<h1 style='text-align: center;'><u>OneMediation V-Hub</u></h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center;'><u>ASTRA Comparison Tool</u></h2>", unsafe_allow_html=True)
 
-old_file = st.file_uploader(" 📂 Step 1: Upload Old ASTRA Report", type=["xlsx"], key="old")
-new_file = st.file_uploader(" 📂 Step 2: Upload New ASTRA Report", type=["xlsx"], key="new")
+# Enhancement #2: accept both xlsx and csv
+old_file = st.file_uploader(" 📂 Step 1: Upload Old ASTRA Report", type=["xlsx", "csv"], key="old")
+new_file = st.file_uploader(" 📂 Step 2: Upload New ASTRA Report", type=["xlsx", "csv"], key="new")
 
 if old_file:
     st.session_state["uploaded_files"]["old_report"] = {"data": BytesIO(old_file.getvalue()), "name": old_file.name}
@@ -91,9 +92,36 @@ def process_reports(df_old, df_new):
 
     return buffer, summary
 
+# --- Enhancement #1 helpers: header normalization (space-insensitive) ---
+def _normalize_headers(df):
+    # Create a lookup of "spaceless lowercase" -> actual column
+    lookup = {c.replace(" ", "").lower(): c for c in df.columns}
+    # Ensure expected columns exist with their spaced names if variants are present
+    def ensure(name):
+        key = name.replace(" ", "").lower()
+        if key in lookup and lookup[key] != name:
+            df.rename(columns={lookup[key]: name}, inplace=True)
+    # Normalize the columns used by the app + your example "Package Name"
+    for col in ["Images Containing Package", "CVE Ids", "SLA Date", "Unnamed: 14", "Package Name"]:
+        ensure(col)
+    return df
+
+# --- Enhancement #2 helper: read csv or xlsx without touching other logic ---
+def _read_any(file_bytes_io, filename):
+    if filename.lower().endswith(".csv"):
+        return pd.read_csv(file_bytes_io)
+    return pd.read_excel(file_bytes_io)
+
 if st.session_state["uploaded_files"].get("old_report") and st.session_state["uploaded_files"].get("new_report"):
-    df_old = pd.read_excel(st.session_state["uploaded_files"]["old_report"]["data"])
-    df_new = pd.read_excel(st.session_state["uploaded_files"]["new_report"]["data"])
+    # Enhancement #2: use flexible reader
+    df_old = _read_any(st.session_state["uploaded_files"]["old_report"]["data"],
+                       st.session_state["uploaded_files"]["old_report"]["name"])
+    df_new = _read_any(st.session_state["uploaded_files"]["new_report"]["data"],
+                       st.session_state["uploaded_files"]["new_report"]["name"])
+
+    # Enhancement #1: make headers space-insensitive
+    df_old = _normalize_headers(df_old)
+    df_new = _normalize_headers(df_new)
 
     progress_bar = st.progress(0)
     status_text = st.empty()
